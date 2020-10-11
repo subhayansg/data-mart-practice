@@ -1,0 +1,30 @@
+source_list:
+#  - SB
+#  - OL
+  - 1CP
+#  - CUST_ADDR
+
+s3_conf:
+  s3_bucket: subhayan-bucket
+  staging_area: /staging/pg
+
+SB:
+  mysql_conf:
+    dbtable: testdb.TRANSACTIONSYNC
+    partition_column: App_Transaction_Id
+
+OL:
+  sftp_conf:
+    fileType: csv
+    delimiter: |
+    directory: /home/ubuntu/data
+    filename: receipts_delta_GBR_14_10_2017.csv
+
+1CP:
+  s3_conf:
+    s3_bucket: subhayan-bucket
+    filename: KC_Extract_1_20171009.csv
+    staging_area: subhayan-bucket/KC_Extract_1_20171009.csv
+
+CUST_ADDR:
+  mongodb_conf:
