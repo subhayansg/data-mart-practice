@@ -3,7 +3,8 @@ import os
 import yaml
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_date
-import com.pg.utils as utils
+
+from com.pg.utils.utility import read_from_mysql, read_from_sftp, read_from_s3, read_from_mongodb
 
 if __name__ == "__main__":
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     for src in src_list:
         if src == 'SB':
             # Step 3. Read data from mysql database and write into staging area
-            sb_df = utils.utility.read_from_mysql(spark, app_conf, app_secret) \
+            sb_df = read_from_mysql(spark, app_conf, app_secret) \
                 .withColumn("ins_dt", current_date())
             sb_df.show()
             sb_df.write \
@@ -41,7 +42,7 @@ if __name__ == "__main__":
 
         elif src == 'OL':
             # Step 4. Read sftp data and write into staging area
-            ol_df = utils.utility.read_from_sftp(spark, app_conf, app_secret) \
+            ol_df = read_from_sftp(spark, app_conf, app_secret) \
                 .withColumn("ins_dt", current_date())
             ol_df.show()
             ol_df.write \
@@ -51,7 +52,7 @@ if __name__ == "__main__":
 
         elif src == '1CP':
             # Step 5. Read s3 bucket data and write into staging area
-            cp_df = utils.utility.read_from_s3(spark, app_conf) \
+            cp_df = read_from_s3(spark, app_conf) \
                 .withColumn("ins_dt", current_date())
             cp_df.show()
             cp_df.write \
@@ -61,7 +62,7 @@ if __name__ == "__main__":
 
         elif src == 'CUST_ADDR':
             # Step 6. Read data from mongodb and write into staging area
-            cust_df = utils.utility.read_from_mongodb(spark, app_conf) \
+            cust_df = read_from_mongodb(spark, app_conf) \
                 .withColumn("inst_dt", current_date())
             cust_df.show()
             cust_df.write \
