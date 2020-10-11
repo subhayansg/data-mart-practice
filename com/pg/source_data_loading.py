@@ -3,8 +3,7 @@ import os
 import yaml
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_date
-
-import com.pg.utils.utility as utils
+import com.pg.utils as utils
 
 if __name__ == "__main__":
 
@@ -32,7 +31,7 @@ if __name__ == "__main__":
     for src in src_list:
         if src == 'SB':
             # Step 3. Read data from mysql database and write into staging area
-            sb_df = utils.read_from_mysql(spark, app_conf, app_secret) \
+            sb_df = utils.utility.read_from_mysql(spark, app_conf, app_secret) \
                 .withColumn("ins_dt", current_date())
             sb_df.show()
             sb_df.write \
@@ -42,7 +41,7 @@ if __name__ == "__main__":
 
         elif src == 'OL':
             # Step 4. Read sftp data and write into staging area
-            ol_df = utils.read_from_sftp(spark, app_conf, app_secret) \
+            ol_df = utils.utility.read_from_sftp(spark, app_conf, app_secret) \
                 .withColumn("ins_dt", current_date())
             ol_df.show()
             ol_df.write \
@@ -52,7 +51,7 @@ if __name__ == "__main__":
 
         elif src == '1CP':
             # Step 5. Read s3 bucket data and write into staging area
-            cp_df = utils.read_from_s3(spark, app_conf) \
+            cp_df = utils.utility.read_from_s3(spark, app_conf) \
                 .withColumn("ins_dt", current_date())
             cp_df.show()
             cp_df.write \
@@ -62,7 +61,7 @@ if __name__ == "__main__":
 
         elif src == 'CUST_ADDR':
             # Step 6. Read data from mongodb and write into staging area
-            cust_df = utils.read_from_mongodb(spark, app_conf) \
+            cust_df = utils.utility.read_from_mongodb(spark, app_conf) \
                 .withColumn("inst_dt", current_date())
             cust_df.show()
             cust_df.write \
@@ -70,7 +69,7 @@ if __name__ == "__main__":
                 .mode("append") \
                 .parquet("s3a://" + + app_conf["s3_conf"]["s3_bucket"] + "/" + app_conf["s3_conf"]["staging_area"])
 
-
+# spark-submit --packages "org.apache.hadoop:hadoop-aws:2.7.4" data-mart-practice/com/pg/source_data_loading.py
 
 
 
