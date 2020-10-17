@@ -1,5 +1,4 @@
 import os
-
 import yaml
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_date
@@ -8,15 +7,7 @@ from com.pg.utils.utility import read_from_mysql, read_from_sftp, read_from_s3, 
 
 if __name__ == "__main__":
 
-    # Step 1. Create SparkSession
-    spark = SparkSession.builder \
-        .master("local[*]") \
-        .appName("Read ingestion data from enterprise applications") \
-        .getOrCreate()
-
-    spark.sparkContext.setLogLevel('ERROR')
-
-    # Step 2. Read configuration files
+    # Step 1. Read configuration files
     current_dir = os.path.abspath(os.path.dirname(__file__))
     # print(current_dir)
     # D:\Workspace\data - mart - practice\com\pg
@@ -26,6 +17,16 @@ if __name__ == "__main__":
     app_conf = yaml.load(conf, Loader=yaml.FullLoader)
     secrets = open(app_secret_file)
     app_secret = yaml.load(secrets, Loader=yaml.FullLoader)
+
+    # Step 2. Create SparkSession
+    spark = SparkSession \
+        .builder \
+        .master("local[*]") \
+        .config("spark.mongodb.input.uri", app_secret["mongodb_conf"]["uri"]) \
+        .appName("Read ingestion data from enterprise applications") \
+        .getOrCreate()
+
+    spark.sparkContext.setLogLevel('ERROR')
 
     # Iterate through the sources
     src_list = app_conf["source_list"]

@@ -6,7 +6,7 @@ source_list:
 
 s3_conf:
   s3_bucket: subhayan-bucket
-  staging_area: /staging/pg
+  staging_area: staging_pg
 
 SB:
   mysql_conf:
@@ -24,7 +24,8 @@ OL:
   s3_conf:
     s3_bucket: subhayan-bucket
     filename: KC_Extract_1_20171009.csv
-    staging_area: subhayan-bucket/KC_Extract_1_20171009.csv
 
 CUST_ADDR:
   mongodb_conf:
+    database:
+    collection:

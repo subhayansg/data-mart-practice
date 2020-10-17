@@ -1,3 +1,6 @@
+import os
+
+
 def get_mysql_jdbc_url(mysql_config: dict):
     host = mysql_config["mysql_conf"]["hostname"]
     port = mysql_config["mysql_conf"]["port"]
@@ -51,8 +54,8 @@ def read_from_mongodb(spark, app_conf):
     txn_DF = spark \
         .read \
         .format("com.mongodb.spark.sql.DefaultSource") \
-        .option("database", app_conf["mongodb_config"]["database"]) \
-        .option("collection", app_conf["mongodb_config"]["collection"]) \
+        .option("database", app_conf["mongodb_conf"]["database"]) \
+        .option("collection", app_conf["mongodb_conf"]["collection"]) \
         .load()
 
     return txn_DF
